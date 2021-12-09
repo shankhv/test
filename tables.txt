@@ -1,0 +1,7 @@
+number=int(input("SELECT A NUMBER FOR DISPALYING THE TABLE"))
+end=10
+times=1
+while times <= end :
+    print(number,"X",times,"=",(number*times))
+    times=times+1
+print("TABLE OF",number,"UPTO 10")
