@@ -1,0 +1,72 @@
+
+1.	Find all customer names from Bangalore who have sales records for today
+.
+        select cust_nm
+        from customer
+        where cust_city = 'banglore' and cust_id in (select cust_id from sales where sales_date = '11-nov-21');
+
+2.	Find all the customers from Bangalore who did not purchase anything from last two months. 
+
+        select customer.cust_nm
+        from customer
+        inner join sales
+        on customer.cust_id = sales.cust_id
+        where  sales.sales_date not between to_date('01-09-21','dd-mm-yy') and to_date('31-10-21','dd-mm-yy')
+        group by customer.cust_nm;
+
+3.	How many different cities from which we have our customers
+        
+        select cust_city
+        from customer
+        group by cust_city
+
+4.	Find customers who are from the same city as Customer ‘TIM’
+
+        select cust_id,cust_nm,cust_city
+        from customer
+        where cust_city in (select cust_city from customer where cust_nm = 'tim') and cust_nm != 'tim'
+
+5.	Find how many customers we added into the company last month
+
+        select cust_id,cust_nm,cust_crt_date
+        from customer
+        where extract(month from cust_crt_date) = extract(month from add_months(sysdate,-1)) and 
+                                                  extract(year from cust_crt_date)=extract(year from sysdate) ;
+
+6.	List the city wise number of customers.
+
+        select cust_city,count(cust_id) as number_customers_from_cities  
+        from customer 
+        group by cust_city;
+
+7.	Find the city which has more number of customers than the city Mysore.
+
+        select cust_city ,count(cust_city) as number_customers_from_cities  
+        from customer 
+        group by cust_city
+        having count(cust_city) > (select count(cust_id) from customer where cust_city = 'mysore');
+
+8.	Display the monthwise number of sales transactions and the amount we received in that month for the current year.
+
+        select to_char(sales_date,'mon') as month_wise_income ,sum(amount)
+        from sales
+        group by to_char(sales_date,'mon');
+
+9.	Display city, gender wise number of customers.
+
+        select cust_city,cust_gender,count(cust_gender) as customer_per_gender
+        from customer
+        group by cust_city,cust_gender;
+
+10.     Display the customers who are from Chennai or Bangalore who are aged more than 50 years and name starts with M or S
+   
+        select cust_nm,round((sysdate-to_date(cust_dob))/365)as age
+        from customer
+        where (cust_city = 'banglore' or cust_city = 'chennai') 
+              and round((sysdate-to_date(cust_dob))/365) > 54 
+              and (cust_nm like 's%' or cust_nm like 'm%')
+
+
+
+        
+        
